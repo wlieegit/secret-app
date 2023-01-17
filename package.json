@@ -18,6 +18,8 @@
     "@aws-sdk/lib-dynamodb": "^3.245.0",
     "@next/font": "13.1.2",
     "@polkadot/extension-dapp": "^0.44.8",
+    "@polkadot/util": "^10.2.6",
+    "@polkadot/util-crypto": "^10.2.6",
     "@types/node": "18.11.18",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.10",

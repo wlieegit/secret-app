@@ -1,0 +1,18 @@
+.loginPage {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.connectButton {
+    margin-top: 24px;
+    padding: 8px 48px; 
+}
+
+.userName {
+    margin-top: 16px;
+    padding: 8px 48px;
+    font-size: 22px;
+}

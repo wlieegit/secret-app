@@ -11,6 +11,7 @@ const SecretPage = () => {
     </div>
   );
 };
+
 export default SecretPage;
 
 export async function getServerSideProps(context: NextPageContext) {
@@ -18,7 +19,7 @@ export async function getServerSideProps(context: NextPageContext) {
   if (!session) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/login",
         permanent: false,
       },
     };

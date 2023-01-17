@@ -18,7 +18,7 @@ export default NextAuth({
       },
       async authorize(credentials) {
         if (!isPolkadotAddress(credentials?.address)) {
-          throw new Error('address is not a polkadot address')
+          throw new Error("address is not a polkadot address");
         }
         return {
           id: credentials?.address,
@@ -40,6 +40,6 @@ export default NextAuth({
   },
   secret: process.env.NEXT_AUTH_SECRET,
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
 });

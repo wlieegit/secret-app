@@ -8,10 +8,10 @@ export function useSignOut() {
   }, []);
 
   useEffect(() => {
-    if (session.status !== "loading") {
+    if (session.status !== "authenticated" && session.status !== "loading") {
       handleSignout();
     }
-  }, [session.status, handleSignout]);
+  }, [session, handleSignout]);
 
   return { handleSignout } as const;
 }

@@ -6,7 +6,7 @@ import {
   signatureVerify,
 } from '@polkadot/util-crypto'
 
-export const isValidAddress = (address: string): boolean => {
+export function isValidAddress(address: string): boolean {
   try {
     encodeAddress(
       decodeAddress(isHex(address) ? hexToString(address) : address),
@@ -17,11 +17,11 @@ export const isValidAddress = (address: string): boolean => {
   }
 }
 
-export const isValidSignature = async (
+export async function isValidSignature(
   signedMessage?: string,
   signature?: string,
   address?: string,
-): Promise<boolean> => {
+): Promise<boolean> {
   try {
     // Some interfaces, such as using sr25519 however are only available via WASM
     await cryptoWaitReady()
@@ -34,6 +34,10 @@ export const isValidSignature = async (
   }
 }
 
-export const isValidMessage = (message: string, address: string): boolean => {
+export function isValidMessage(message: string, address: string): boolean {
   return message === `Sign-in request for address ${address}.`
+}
+
+export function beatifyAddress(address: string) {
+  return `${address.slice(0, 3)}...${address.slice(-3)}`
 }

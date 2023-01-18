@@ -3,9 +3,9 @@ import {getSession} from 'next-auth/react'
 import {NextPageContext} from 'next'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Container from '@mui/material/CardContent'
 import LinearProgress from '@mui/material/LinearProgress'
-import Typography from '@mui/material/Typography'
 
 const Connect = dynamic(
   () => import('@/components/Connect').then((m) => m.Connect),
@@ -19,22 +19,17 @@ function SigninPage() {
   return (
     <Container
       sx={{
-        width: '100%',
         display: 'flex',
         justifyContent: 'center',
         paddingY: '20px',
       }}
     >
       <Card sx={{width: 500}}>
+        <CardHeader
+          aria-label="Signin with Polkadot"
+          title="Signin with Polkadot"
+        />
         <CardContent>
-          <Typography
-            variant="h5"
-            component="div"
-            color="text.primary"
-            gutterBottom
-          >
-            Signin with Polkadot
-          </Typography>
           <Connect />
         </CardContent>
       </Card>
@@ -49,7 +44,7 @@ export async function getServerSideProps(context: NextPageContext) {
   if (session) {
     return {
       redirect: {
-        destination: '/secret',
+        destination: '/',
         permanent: true,
       },
     }

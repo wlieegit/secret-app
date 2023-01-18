@@ -33,15 +33,6 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
-  redirects: async () => {
-    return [
-      {
-        source: '/',
-        destination: '/signin',
-        permanent: true,
-      },
-    ]
-  },
   headers: () => [
     {
       // Apply these headers to all routes in your application.

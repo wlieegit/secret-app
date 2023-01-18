@@ -1,7 +1,13 @@
 import type {JWT} from 'next-auth/jwt'
 import NextAuth, {Session} from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import {isValidAddress, isValidSignature, isValidMessage} from '@/utils/polkadot'
+import {
+  isValidAddress,
+  isValidSignature,
+  isValidMessage,
+} from '@/utils/polkadot'
+
+const maxAge = 3600 // expires in 1 hour to be safe, as already have session refresh built in nextauth
 
 export default NextAuth({
   providers: [
@@ -18,11 +24,7 @@ export default NextAuth({
         if (!isValid) {
           throw new Error('polkadot address is invalid')
         }
-        isValid = await isValidSignature(
-          message,
-          signature,
-          address,
-        )
+        isValid = await isValidSignature(message, signature, address)
         if (!isValid) {
           throw new Error('polkadot signature is invalid')
         }
@@ -41,6 +43,7 @@ export default NextAuth({
   },
   jwt: {
     secret: process.env.JWT_SECRET,
+    maxAge,
   },
   callbacks: {
     async session({session, token}: {session: Session; token: JWT}) {
@@ -50,6 +53,7 @@ export default NextAuth({
   secret: process.env.NEXT_AUTH_SECRET,
   pages: {
     signIn: '/signin',
+    signOut: '/signin',
     error: '/signin',
   },
 })

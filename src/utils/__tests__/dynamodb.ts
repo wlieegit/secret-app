@@ -1,4 +1,4 @@
-import {client} from '../index'
+import {client} from '../dynamodb'
 
 const TableName = process.env.DYNAMODB_TABLE_NAME
 

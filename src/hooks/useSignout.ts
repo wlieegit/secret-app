@@ -1,7 +1,7 @@
-import {useSession, signOut} from 'next-auth/react'
 import {useCallback, useEffect} from 'react'
+import {useSession, signOut} from 'next-auth/react'
 
-export function useSignOut() {
+export default function () {
   const session = useSession()
   const handleSignout = useCallback(async () => {
     await signOut({callbackUrl: '/signin'})
@@ -11,7 +11,11 @@ export function useSignOut() {
     if (session.status !== 'authenticated' && session.status !== 'loading') {
       handleSignout()
     }
-  }, [session, handleSignout])
+  }, [session.status, handleSignout])
 
-  return {handleSignout} as const
+  return {
+    handleSignout,
+    session: session.data,
+    isAuthenticated: session.status === 'authenticated',
+  } as const
 }

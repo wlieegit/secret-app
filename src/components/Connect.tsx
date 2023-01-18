@@ -1,4 +1,4 @@
-import {beatifyAddress} from '@/utils'
+import {beatifyAddress} from '@/utils/polkadot'
 import {
   isWeb3Injected,
   web3Accounts,
@@ -111,7 +111,7 @@ export function Connect() {
         address: account.address,
         message,
         signature,
-        callbackUrl: '/secret',
+        callbackUrl: '/',
       })
     } catch (error: any) {
       setState({...initialConnectState, error})
@@ -148,6 +148,7 @@ export function Connect() {
       {!state.data && (
         <Button
           variant="contained"
+          aria-label={isWeb3Injected ? 'Signin' : 'Connect'}
           startIcon={isWeb3Injected ? <LoginIcon /> : <GrainIcon />}
           onClick={handleConnect}
           disabled={state.loading}

@@ -131,7 +131,7 @@ export function Connect() {
     <Stack spacing={1}>
       {state.error && (
         <Alert severity="error">
-          Error with {isWeb3Injected ? 'sigin' : 'connect'}:{' '}
+          Error with {isWeb3Injected ? 'signin' : 'connect'}:{' '}
           {state.error.message}
         </Alert>
       )}

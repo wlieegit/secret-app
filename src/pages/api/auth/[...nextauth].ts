@@ -1,7 +1,7 @@
 import type {JWT} from 'next-auth/jwt'
 import NextAuth, {Session} from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import {isValidAddress, isValidSignature} from '@/utils/polkadot'
+import {isValidAddress, isValidSignature, isValidMessage} from '@/utils/polkadot'
 
 export default NextAuth({
   providers: [
@@ -14,17 +14,21 @@ export default NextAuth({
         signature: {type: 'text'},
       },
       async authorize({address, message, signature}) {
-        const isAddressValid = await isValidAddress(address)
-        if (!isAddressValid) {
-          throw new Error('polkadot isAddressValid is invalid')
+        let isValid = isValidAddress(address)
+        if (!isValid) {
+          throw new Error('polkadot address is invalid')
         }
-        const isSignatureValid = await isValidSignature(
+        isValid = await isValidSignature(
           message,
           signature,
           address,
         )
-        if (!isSignatureValid) {
+        if (!isValid) {
           throw new Error('polkadot signature is invalid')
+        }
+        isValid = isValidMessage(message, address)
+        if (!isValid) {
+          throw new Error('polkadot message is invalid')
         }
         return {
           id: address,

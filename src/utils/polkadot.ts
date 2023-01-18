@@ -33,3 +33,7 @@ export const isValidSignature = async (
     return false
   }
 }
+
+export const isValidMessage = (message: string, address: string): boolean => {
+  return message === `Sign-in request for address ${address}.`
+}

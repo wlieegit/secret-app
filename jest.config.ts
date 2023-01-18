@@ -4,13 +4,13 @@
  */
 import nextJest from 'next/jest'
 
-const createJestConfig = nextJest({ dir: './' })
+const createJestConfig = nextJest({dir: './'})
 
 export default createJestConfig({
   clearMocks: true,
   collectCoverage: true,
-  coverageDirectory: "coverage",
-  setupFiles: ["<rootDir>/test/setup-tests.ts"],
-  testEnvironment: "node",
+  coverageDirectory: 'coverage',
+  setupFiles: ['<rootDir>/test/setup-tests.ts'],
+  testEnvironment: 'node',
   preset: '@shelf/jest-dynamodb',
 })

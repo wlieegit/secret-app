@@ -1,45 +1,51 @@
-import NextAuth, { Session } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
-import { isPolkadotAddress } from "@/utils";
-
-type CustomSession = Session & { address?: string };
+import type {JWT} from 'next-auth/jwt'
+import NextAuth, {Session} from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import {isValidAddress, isValidSignature} from '@/utils/polkadot'
 
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      id: 'polkadot',
+      name: 'Polkadot',
       credentials: {
-        address: {
-          label: "Address",
-          type: "text",
-          placeholder: "0x0",
-        },
+        address: {type: 'text'},
+        message: {type: 'text'},
+        signature: {type: 'text'},
       },
-      async authorize(credentials) {
-        if (!isPolkadotAddress(credentials?.address)) {
-          throw new Error("address is not a polkadot address");
+      async authorize({address, message, signature}) {
+        const isAddressValid = await isValidAddress(address)
+        if (!isAddressValid) {
+          throw new Error('polkadot isAddressValid is invalid')
+        }
+        const isSignatureValid = await isValidSignature(
+          message,
+          signature,
+          address,
+        )
+        if (!isSignatureValid) {
+          throw new Error('polkadot signature is invalid')
         }
         return {
-          id: credentials?.address,
-        };
+          id: address,
+        }
       },
     }),
   ],
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   jwt: {
     secret: process.env.JWT_SECRET,
   },
   callbacks: {
-    async session({ session, token }: { session: CustomSession; token: JWT }) {
-      session.address = token.sub;
-      return session;
+    async session({session, token}: {session: Session; token: JWT}) {
+      return {...session, user: {address: token.sub}} as Session
     },
   },
   secret: process.env.NEXT_AUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: '/signin',
+    error: '/signin',
   },
-});
+})

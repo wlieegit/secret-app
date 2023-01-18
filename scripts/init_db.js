@@ -8,11 +8,13 @@ const initData = require('./init_data.json')
 
 dotenv.config({path: '.env.devops'})
 
+// add 'S' prefix to avoid conflict with the reserved env variable name at Vercel
+// https://vercel.com/docs/concepts/limits/overview?query=reserve#reserved-variables
 const client = new DynamoDBClient({
-  region: process.env.AWS_REGION,
+  region: process.env.S_AWS_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
+    accessKeyId: process.env.S_AWS_ACCESS_KEY,
+    secretAccessKey: process.env.S_AWS_SECRET_KEY,
   },
 })
 

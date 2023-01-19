@@ -7,13 +7,10 @@ import CardHeader from '@mui/material/CardHeader'
 import Container from '@mui/material/CardContent'
 import LinearProgress from '@mui/material/LinearProgress'
 
-const Connect = dynamic(
-  () => import('@/components/Connect'),
-  {
-    loading: () => <LinearProgress />,
-    ssr: false,
-  },
-)
+const Connect = dynamic(() => import('@/components/Connect'), {
+  loading: () => <LinearProgress />,
+  ssr: false,
+})
 
 function SigninPage() {
   return (

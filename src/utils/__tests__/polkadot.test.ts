@@ -33,13 +33,10 @@ describe('polkadot', () => {
     it('should return true if signature is valid', async () => {
       const keyring = new Keyring()
       const user = keyring.addFromUri('//user')
-      const msg = 'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.'
+      const msg =
+        'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.'
       const signature = u8aToHex(user.sign(msg))
-      const isValid = await isValidSignature(
-        msg,
-        signature,
-        user.address,
-      )
+      const isValid = await isValidSignature(msg, signature, user.address)
       expect(isValid).toBeTruthy()
     })
 
@@ -63,14 +60,16 @@ describe('polkadot', () => {
   })
   describe('isValidMessage', () => {
     it('should return true if message is valid', async () => {
-      const isValid = await isValidMessage("Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.",
-      '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo',
+      const isValid = await isValidMessage(
+        'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.',
+        '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo',
       )
       expect(isValid).toBeTruthy()
     })
     it('should return false if message is invalid', async () => {
-      const isValid = await isValidMessage("Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84CCCC.",
-      '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo',
+      const isValid = await isValidMessage(
+        'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84CCCC.',
+        '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo',
       )
       expect(isValid).toBeFalsy()
     })

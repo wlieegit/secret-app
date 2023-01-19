@@ -3,6 +3,9 @@
  * https://jestjs.io/docs/configuration
  */
 import nextJest from 'next/jest'
+const requireJSON5 = require('require-json5') // ts-config contains comments, import json does not work, need to use this package to import indirectly.
+const tsconfig = requireJSON5('./tsconfig.json')
+const moduleNameMapper = require('tsconfig-paths-jest')(tsconfig) // Use this to support '@' import for jest.
 
 const createJestConfig = nextJest({dir: './'})
 
@@ -13,4 +16,5 @@ export default createJestConfig({
   setupFiles: ['<rootDir>/test/setup-tests.ts'],
   testEnvironment: 'node',
   preset: '@shelf/jest-dynamodb',
+  moduleNameMapper,
 })

@@ -10,11 +10,15 @@ import {stringToHex} from '@polkadot/util'
 
 type PolkadotData = {
   accounts: InjectedAccountWithMeta[]
+  hasAccount: boolean
   selectedAccount?: InjectedAccountWithMeta
   error?: Error
   connect: () => Promise<void>
   setSelectedAccount: (account: InjectedAccountWithMeta) => void
-  getSignature: (message: string) => Promise<string>
+  getSignature: (
+    message: string,
+    account?: InjectedAccountWithMeta,
+  ) => Promise<string>
 }
 
 export default function (autoConnect: boolean = false): PolkadotData {
@@ -39,7 +43,7 @@ export default function (autoConnect: boolean = false): PolkadotData {
 
   async function connect() {
     try {
-      setError(null)
+      hideError()
       const injectedExtensions = await web3Enable('secret-app')
       if (injectedExtensions.length > 0) {
         const accounts = await web3Accounts()
@@ -55,13 +59,17 @@ export default function (autoConnect: boolean = false): PolkadotData {
     }
   }
 
-  async function getSignature(message: string) {
+  async function getSignature(
+    message: string,
+    account?: InjectedAccountWithMeta,
+  ) {
     try {
-      setError(null)
-      const injector = await web3FromSource(selectedAccount.meta.source)
+      hideError()
+      const accountForSignature = account ?? selectedAccount
+      const injector = await web3FromSource(accountForSignature.meta.source)
       return (
         await injector.signer?.signRaw({
-          address: selectedAccount.address,
+          address: accountForSignature.address,
           data: stringToHex(message),
           type: 'bytes',
         })
@@ -71,8 +79,13 @@ export default function (autoConnect: boolean = false): PolkadotData {
     }
   }
 
+  function hideError() {
+    setError(null)
+  }
+
   return {
     accounts,
+    hasAccount: accounts.length > 0,
     selectedAccount,
     error,
     connect,

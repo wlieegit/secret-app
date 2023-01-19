@@ -11,6 +11,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import LinearProgress from '@mui/material/LinearProgress'
 import Radio from '@mui/material/Radio'
+import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import GrainIcon from '@mui/icons-material/Grain'
 import LoginIcon from '@mui/icons-material/Login'
@@ -18,9 +19,9 @@ import usePolkadot from '@/hooks/usePolkadot'
 import {deepOrange} from '@mui/material/colors'
 
 export function Connect() {
-  const router = useRouter()
   const {
     accounts,
+    hasAccount,
     selectedAccount,
     error,
     connect,
@@ -29,34 +30,33 @@ export function Connect() {
   } = usePolkadot()
   const [loading, setLoading] = useState<boolean>(false)
   const [signinError, setSigninError] = useState<Error>()
+  const router = useRouter()
 
   useEffect(() => {
-    const error = router.query.error
-    if (error) {
-      setSigninError(
-        new Error(
-          Array.isArray(error) ? (error as any).concat(',') : (error as string),
-        ),
-      )
-    }
-  }, [router.query.error])
+    setSigninError(error)
+  }, [error])
 
   const handleConnect = useCallback(
     async function () {
-      setSigninError(null)
-      if (accounts.length > 0) {
+      hideSigninError()
+      if (hasAccount) {
         if (selectedAccount) {
           const message = `Sign-in request for address ${selectedAccount.address}.`
           const signature = await getSignature(message)
           if (signature) {
             setLoading(true)
             try {
-              await signIn('polkadot', {
+              const resp = await signIn('polkadot', {
                 address: selectedAccount.address,
                 message,
                 signature,
-                callbackUrl: '/',
+                redirect: false,
               })
+              if (resp.ok) {
+                await router.push('/')
+              } else {
+                throw new Error(resp.error)
+              }
             } catch (error: any) {
               setSigninError(error)
             }
@@ -70,37 +70,26 @@ export function Connect() {
     [accounts, selectedAccount],
   )
 
-  function errorMessage(error?: Error) {
-    if (error) {
-      return (
-        <Alert severity="error">
-          Error with {accounts.length > 0 ? 'signin' : 'connect'}:{' '}
-          {error.message}
-        </Alert>
-      )
-    }
-    return null
+  function hideSigninError() {
+    setSigninError(null)
   }
 
   return (
     <Stack spacing={1}>
-      {errorMessage(error)}
-      {errorMessage(signinError)}
-      {accounts.length > 0 && (
+      {hasAccount && (
         <List dense sx={{width: '100%', bgcolor: 'background.paper'}}>
           {accounts.map((account) => {
             return (
               <ListItem
                 key={account.address}
                 onClick={() => setSelectedAccount(account)}
-                secondaryAction={
-                  <Radio
-                    checked={selectedAccount?.address === account.address}
-                  />
-                }
                 disablePadding
               >
-                <ListItemButton>
+                <ListItemButton
+                  selected={selectedAccount?.address === account.address}
+                  disabled={loading}
+                  onClick={() => setSelectedAccount(account)}
+                >
                   <ListItemAvatar>
                     <Avatar sx={{bgcolor: deepOrange[500]}}>
                       {account.meta.name}
@@ -119,14 +108,24 @@ export function Connect() {
       )}
       <Button
         variant="contained"
-        aria-label={accounts.length > 0 ? 'Signin' : 'Connect'}
-        startIcon={accounts.length > 0 ? <LoginIcon /> : <GrainIcon />}
+        aria-label={hasAccount ? 'Signin' : 'Connect'}
+        startIcon={hasAccount ? <LoginIcon /> : <GrainIcon />}
         onClick={handleConnect}
-        disabled={loading || (accounts.length > 0 && !selectedAccount)}
+        disabled={loading || (hasAccount && !selectedAccount)}
       >
-        {accounts.length > 0 ? 'Signin' : 'Connect'}
+        {hasAccount ? 'Signin' : 'Connect'}
       </Button>
       {loading && <LinearProgress />}
+      <Snackbar
+        open={!!signinError}
+        autoHideDuration={6000}
+        anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+        onClose={hideSigninError}
+      >
+        <Alert severity="error">
+          Error with {hasAccount ? 'signin' : 'connect'}: {signinError?.message}
+        </Alert>
+      </Snackbar>
     </Stack>
   )
 }

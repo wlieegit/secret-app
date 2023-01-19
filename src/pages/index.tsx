@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import useSignout from '@/hooks/useSignout'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Container from '@mui/material/CardContent'
 import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
@@ -38,7 +39,7 @@ function SecretPage() {
         paddingY: '20px',
       }}
     >
-      <Card sx={{width: 750}}>
+      <Card sx={{width: 650, minWidth: 650}}>
         <Header address={session.user.address} onSignout={handleSignout} />
         <CardContent>
           {secret ? (

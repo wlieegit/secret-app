@@ -1,6 +1,23 @@
 # This is Secret App
 
-## Getting Started
+This is web app providing random presaved secret for users who have signed in using their polkdot wallet.
+It securely sign in user by asking wallet message sign requests and the signed message gets verified before a client session can be given to the browser.
+It supports wallet switch, which will automatically
+
+## Feature list
+
+1. It's a production ready app based on nextjs ecosystem to drastically cutting off development effort
+2. It's using next-auth as opinonated authentication layer, it has fine tuned the session timeout and advanced secruity headers
+3. It uses Material UI as frontend library.
+4. Both frontend and backend code are almost fully covered by unit tests whereever possible
+5. The data persistence layer is AWS dynamodb for its simplicity in terms of dev and deployment
+6. The web app can be easily run locally connected to a local dynamodb, a cloud one, or deployed via Vercel
+
+## Todo list
+
+1. being able to add secret by user
+2. authorization for user for secret that created by them, and others should not be able to see these
+3. integration tests such cypress could be done
 
 ## Development
 
@@ -39,3 +56,5 @@ Run `yarn start:db:local` and then Run `yarn dev`.
    This is because the local dynamodb test is enabled and requires an available port. This problem will occur if it is occupied. This can be fixed by modifying the port numbers of `DYNAMODB_ENDPOINT` and `DYNAMODB_PORT` in `.env.test`
 
    Note: If dynamodb-local is enabled through docker, it will also cause this problem, please modify our test port to avoid this problem
+
+## Deployment

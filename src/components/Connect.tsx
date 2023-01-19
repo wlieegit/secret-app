@@ -10,15 +10,14 @@ import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
 import LinearProgress from '@mui/material/LinearProgress'
-import Radio from '@mui/material/Radio'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import GrainIcon from '@mui/icons-material/Grain'
 import LoginIcon from '@mui/icons-material/Login'
-import usePolkadot from '@/hooks/usePolkadot'
+import {usePolkadot} from '@/hooks/usePolkadot'
 import {deepOrange} from '@mui/material/colors'
 
-export function Connect() {
+export default function () {
   const {
     accounts,
     hasAccount,
@@ -36,7 +35,7 @@ export function Connect() {
     setSigninError(error)
   }, [error])
 
-  const handleConnect = useCallback(
+  const handleConnectOrSignin = useCallback(
     async function () {
       hideSigninError()
       if (hasAccount) {
@@ -80,12 +79,9 @@ export function Connect() {
         <List dense sx={{width: '100%', bgcolor: 'background.paper'}}>
           {accounts.map((account) => {
             return (
-              <ListItem
-                key={account.address}
-                onClick={() => setSelectedAccount(account)}
-                disablePadding
-              >
+              <ListItem key={account.address} disablePadding>
                 <ListItemButton
+                  data-testid="account-item"
                   selected={selectedAccount?.address === account.address}
                   disabled={loading}
                   onClick={() => setSelectedAccount(account)}
@@ -108,9 +104,10 @@ export function Connect() {
       )}
       <Button
         variant="contained"
+        data-testid="connect-button"
         aria-label={hasAccount ? 'Signin' : 'Connect'}
         startIcon={hasAccount ? <LoginIcon /> : <GrainIcon />}
-        onClick={handleConnect}
+        onClick={handleConnectOrSignin}
         disabled={loading || (hasAccount && !selectedAccount)}
       >
         {hasAccount ? 'Signin' : 'Connect'}

@@ -1,7 +1,14 @@
 import {useCallback, useEffect} from 'react'
 import {useSession, signOut} from 'next-auth/react'
+import type {Session} from 'next-auth/core/types'
 
-export default function () {
+type UseSignoutData = {
+  handleSignout: () => Promise<void>
+  session: Session
+  isAuthenticated: boolean
+}
+
+export function useSignout(): UseSignoutData {
   const session = useSession()
   const handleSignout = useCallback(async () => {
     await signOut({callbackUrl: '/signin'})
@@ -17,5 +24,5 @@ export default function () {
     handleSignout,
     session: session.data,
     isAuthenticated: session.status === 'authenticated',
-  } as const
+  }
 }

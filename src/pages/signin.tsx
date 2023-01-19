@@ -8,7 +8,7 @@ import Container from '@mui/material/CardContent'
 import LinearProgress from '@mui/material/LinearProgress'
 
 const Connect = dynamic(
-  () => import('@/components/Connect').then((m) => m.Connect),
+  () => import('@/components/Connect'),
   {
     loading: () => <LinearProgress />,
     ssr: false,

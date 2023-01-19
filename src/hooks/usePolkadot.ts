@@ -18,10 +18,10 @@ type PolkadotData = {
   getSignature: (
     message: string,
     account?: InjectedAccountWithMeta,
-  ) => Promise<string>
+  ) => Promise<string | undefined>
 }
 
-export default function (autoConnect: boolean = false): PolkadotData {
+export function usePolkadot(autoConnect: boolean = false): PolkadotData {
   const [accounts, setAccounts] = useState<InjectedAccountWithMeta[]>([])
   const [selectedAccount, setSelectedAccount] =
     useState<InjectedAccountWithMeta>()
@@ -29,7 +29,7 @@ export default function (autoConnect: boolean = false): PolkadotData {
 
   useEffect(() => {
     if (isWeb3Injected) {
-      connect()
+      autoConnect && connect()
     } else {
       setError(new Error('NO_WEB3_INJECTED'))
     }

@@ -19,7 +19,7 @@ import Snackbar from '@mui/material/Snackbar'
 import {deepOrange} from '@mui/material/colors'
 import LogoutIcon from '@mui/icons-material/Logout'
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount'
-import usePolkadot from '@/hooks/usePolkadot'
+import {usePolkadot} from '@/hooks/usePolkadot'
 import type {InjectedAccountWithMeta} from '@polkadot/extension-inject/types'
 
 type Props = {

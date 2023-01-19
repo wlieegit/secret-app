@@ -1,14 +1,14 @@
 import {client} from '@/utils/dynamodb'
 
-export const TableName = process.env.DYNAMODB_TABLE_NAME ?? 'Secret'
+export const TableName = process.env.DYNAMODB_TABLE_NAME
 
 export async function getRandomSecret(): Promise<string | null> {
   const result = await client.scan({
     TableName,
     Select: 'COUNT',
   })
-  const count = result.Count ?? 0
-  if (count === 0) {
+  const count = result.Count
+  if (!count) {
     return null
   }
 

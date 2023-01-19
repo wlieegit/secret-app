@@ -1,11 +1,7 @@
 import type {JWT} from 'next-auth/jwt'
 import NextAuth, {Session} from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import {
-  isValidAddress,
-  isValidSignature,
-  isValidMessage,
-} from '@/utils/polkadot'
+import {polkadotAuthorize} from '@/pages/api/auth/authorize'
 
 const maxAge = 3600 // expires in 1 hour to be safe, as already have session refresh built in nextauth
 
@@ -20,21 +16,7 @@ export default NextAuth({
         signature: {type: 'text'},
       },
       async authorize({address, message, signature}) {
-        let isValid = isValidAddress(address)
-        if (!isValid) {
-          throw new Error('polkadot address is invalid')
-        }
-        isValid = await isValidSignature(message, signature, address)
-        if (!isValid) {
-          throw new Error('polkadot signature is invalid')
-        }
-        isValid = isValidMessage(message, address)
-        if (!isValid) {
-          throw new Error('polkadot message is invalid')
-        }
-        return {
-          id: address,
-        }
+        return polkadotAuthorize(address, message, signature)
       },
     }),
   ],

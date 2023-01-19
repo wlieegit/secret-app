@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import dynamic from 'next/dynamic'
-import useSignout from '@/hooks/useSignout'
+import {useSignout} from '@/hooks/useSignout'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'

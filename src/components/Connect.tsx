@@ -1,162 +1,132 @@
-import {beatifyAddress} from '@/utils/polkadot'
-import {
-  isWeb3Injected,
-  web3Accounts,
-  web3Enable,
-  web3FromSource,
-} from '@polkadot/extension-dapp'
-import type {
-  InjectedAccountWithMeta,
-  InjectedExtension,
-} from '@polkadot/extension-inject/types'
 import {useCallback, useEffect, useState} from 'react'
 import {useRouter} from 'next/router'
 import {signIn} from 'next-auth/react'
-import {stringToHex} from '@polkadot/util'
 import Alert from '@mui/material/Alert'
+import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import ListItemAvatar from '@mui/material/ListItemAvatar'
+import ListItemButton from '@mui/material/ListItemButton'
+import ListItemText from '@mui/material/ListItemText'
 import LinearProgress from '@mui/material/LinearProgress'
+import Radio from '@mui/material/Radio'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import GrainIcon from '@mui/icons-material/Grain'
 import LoginIcon from '@mui/icons-material/Login'
-
-type ConnectState = {
-  data?: {
-    accounts: InjectedAccountWithMeta[]
-    selectedAccount: number
-  }
-  loading: boolean
-  error: Error | null
-}
-
-const initialConnectState: ConnectState = {
-  data: undefined,
-  loading: false,
-  error: null,
-}
+import usePolkadot from '@/hooks/usePolkadot'
+import {deepOrange} from '@mui/material/colors'
 
 export function Connect() {
   const router = useRouter()
-  const error = router.query.error
-  const [state, setState] = useState<ConnectState>(initialConnectState)
+  const {
+    accounts,
+    selectedAccount,
+    error,
+    connect,
+    setSelectedAccount,
+    getSignature,
+  } = usePolkadot()
+  const [loading, setLoading] = useState<boolean>(false)
+  const [signinError, setSigninError] = useState<Error>()
 
   useEffect(() => {
     const error = router.query.error
     if (error) {
-      setState({
-        ...initialConnectState,
-        error: new Error(
+      setSigninError(
+        new Error(
           Array.isArray(error) ? (error as any).concat(',') : (error as string),
         ),
-      })
+      )
     }
   }, [router.query.error])
 
-  const handleConnect = useCallback(async () => {
-    setState(initialConnectState)
+  const handleConnect = useCallback(
+    async function () {
+      setSigninError(null)
+      if (accounts.length > 0) {
+        if (selectedAccount) {
+          const message = `Sign-in request for address ${selectedAccount.address}.`
+          const signature = await getSignature(message)
+          if (signature) {
+            setLoading(true)
+            try {
+              await signIn('polkadot', {
+                address: selectedAccount.address,
+                message,
+                signature,
+                callbackUrl: '/',
+              })
+            } catch (error: any) {
+              setSigninError(error)
+            }
+            setLoading(false)
+          }
+        }
+      } else {
+        await connect()
+      }
+    },
+    [accounts, selectedAccount],
+  )
 
-    const injectedExtensions = await web3Enable('secret-app')
-    if (!injectedExtensions.length) {
-      setState({
-        ...initialConnectState,
-        error: new Error('NO_INJECTED_EXTENSIONS'),
-      })
-      return
+  function errorMessage(error?: Error) {
+    if (error) {
+      return (
+        <Alert severity="error">
+          Error with {accounts.length > 0 ? 'signin' : 'connect'}:{' '}
+          {error.message}
+        </Alert>
+      )
     }
-
-    let accounts: InjectedAccountWithMeta[]
-    setState({...initialConnectState, loading: true})
-    try {
-      accounts = await web3Accounts()
-    } catch (error: any) {
-      setState({...initialConnectState, error})
-      return
-    }
-
-    if (!accounts.length) {
-      setState({
-        ...initialConnectState,
-        error: new Error('NO_ACCOUNTS'),
-      })
-      return
-    }
-
-    const account = accounts[0]
-    let injector: InjectedExtension
-    try {
-      injector = await web3FromSource(account.meta.source)
-    } catch (error: any) {
-      setState({...initialConnectState, error})
-      return
-    }
-
-    const message = `Sign-in request for address ${account.address}.`
-    let signature: string
-    try {
-      signature = (
-        await injector.signer?.signRaw({
-          address: account.address,
-          data: stringToHex(message),
-          type: 'bytes',
-        })
-      ).signature
-    } catch (error: any) {
-      setState({...initialConnectState, error})
-      return
-    }
-
-    try {
-      await signIn('polkadot', {
-        address: account.address,
-        message,
-        signature,
-        callbackUrl: '/',
-      })
-    } catch (error: any) {
-      setState({...initialConnectState, error})
-      return
-    }
-
-    setState({
-      ...initialConnectState,
-      data: {
-        accounts: accounts,
-        selectedAccount: 0,
-      },
-    })
-  }, [])
+    return null
+  }
 
   return (
     <Stack spacing={1}>
-      {state.error && (
-        <Alert severity="error">
-          Error with {isWeb3Injected ? 'signin' : 'connect'}:{' '}
-          {state.error.message}
-        </Alert>
+      {errorMessage(error)}
+      {errorMessage(signinError)}
+      {accounts.length > 0 && (
+        <List dense sx={{width: '100%', bgcolor: 'background.paper'}}>
+          {accounts.map((account) => {
+            return (
+              <ListItem
+                key={account.address}
+                onClick={() => setSelectedAccount(account)}
+                secondaryAction={
+                  <Radio
+                    checked={selectedAccount?.address === account.address}
+                  />
+                }
+                disablePadding
+              >
+                <ListItemButton>
+                  <ListItemAvatar>
+                    <Avatar sx={{bgcolor: deepOrange[500]}}>
+                      {account.meta.name}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={account.meta.name}
+                    secondary={account.address}
+                    primaryTypographyProps={{variant: 'h5'}}
+                  />
+                </ListItemButton>
+              </ListItem>
+            )
+          })}
+        </List>
       )}
-      {state.data && (
-        <Typography variant="h5" component="div" color="text.secondary">
-          Hello,{' '}
-          {state.data.accounts[state.data.selectedAccount].meta.name ??
-            beatifyAddress(
-              state.data.accounts[state.data.selectedAccount].address,
-            )}
-          !
-        </Typography>
-      )}
-      {!state.data && (
-        <Button
-          variant="contained"
-          aria-label={isWeb3Injected ? 'Signin' : 'Connect'}
-          startIcon={isWeb3Injected ? <LoginIcon /> : <GrainIcon />}
-          onClick={handleConnect}
-          disabled={state.loading}
-        >
-          {isWeb3Injected ? 'Signin' : 'Connect'}
-        </Button>
-      )}
-      {state.loading && <LinearProgress />}
+      <Button
+        variant="contained"
+        aria-label={accounts.length > 0 ? 'Signin' : 'Connect'}
+        startIcon={accounts.length > 0 ? <LoginIcon /> : <GrainIcon />}
+        onClick={handleConnect}
+        disabled={loading || (accounts.length > 0 && !selectedAccount)}
+      >
+        {accounts.length > 0 ? 'Signin' : 'Connect'}
+      </Button>
+      {loading && <LinearProgress />}
     </Stack>
   )
 }

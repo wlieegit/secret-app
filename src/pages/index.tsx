@@ -1,15 +1,17 @@
 import {useEffect, useState} from 'react'
+import dynamic from 'next/dynamic'
 import useSignout from '@/hooks/useSignout'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
 import Container from '@mui/material/CardContent'
+import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
-import {deepOrange} from '@mui/material/colors'
-import LogoutIcon from '@mui/icons-material/Logout'
+
+const Header = dynamic(() => import('@/components/Header'), {
+  loading: () => <LinearProgress />,
+  ssr: false,
+})
 
 function SecretPage() {
   const {handleSignout, session, isAuthenticated} = useSignout()
@@ -36,24 +38,8 @@ function SecretPage() {
         paddingY: '20px',
       }}
     >
-      <Card sx={{width: 500}}>
-        <CardHeader
-          avatar={
-            <Avatar sx={{bgcolor: deepOrange[500]}}>
-              {session.user.address}
-            </Avatar>
-          }
-          action={
-            <Button
-              aria-label="Signout"
-              variant="outlined"
-              startIcon={<LogoutIcon />}
-              onClick={handleSignout}
-            >
-              Signout
-            </Button>
-          }
-        />
+      <Card sx={{width: 750}}>
+        <Header address={session.user.address} onSignout={handleSignout} />
         <CardContent>
           {secret ? (
             <Typography

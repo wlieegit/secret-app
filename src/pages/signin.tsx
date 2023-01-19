@@ -24,7 +24,7 @@ function SigninPage() {
         paddingY: '20px',
       }}
     >
-      <Card sx={{width: 500}}>
+      <Card sx={{width: 650}}>
         <CardHeader
           aria-label="Signin with Polkadot"
           title="Signin with Polkadot"

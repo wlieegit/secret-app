@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write --ignore-path .gitignore .",
-    "test": "jest",
+    "test": "jest --runInBand",
     "pretest": "yarn start:db:local",
     "posttest": "yarn stop:db:local",
     "start:db:local": "docker-compose up -d",

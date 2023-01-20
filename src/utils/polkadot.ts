@@ -5,6 +5,7 @@ import {
   encodeAddress,
   signatureVerify,
 } from '@polkadot/util-crypto'
+import {getSignInMessageWithAddress} from './signature'
 
 export function isValidAddress(address: string): boolean {
   try {
@@ -35,7 +36,7 @@ export async function isValidSignature(
 }
 
 export function isValidMessage(message: string, address: string): boolean {
-  return message === `Sign-in request for address ${address}.`
+  return message === getSignInMessageWithAddress(address)
 }
 
 export function beatifyAddress(address: string) {

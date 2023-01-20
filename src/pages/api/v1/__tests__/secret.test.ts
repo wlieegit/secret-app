@@ -3,7 +3,7 @@ import handler from '../secret'
 import http from 'http'
 import {encode} from 'next-auth/jwt'
 import initDatas from '@/../scripts/init_data.json'
-import {client} from '@/utils/dynamodb'
+import {dynamodbDocument} from '@/utils/dynamodb'
 
 const TableName = process.env.DYNAMODB_TABLE_NAME
 let token = ''
@@ -54,7 +54,7 @@ describe('secret api test', () => {
     const secrets = new Set()
     const responseSecrets = new Set()
     for (const initData of initDatas) {
-      await client.put({
+      await dynamodbDocument.put({
         TableName,
         Item: {id: initData.id, secret: initData.secret},
       })

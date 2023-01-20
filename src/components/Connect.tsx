@@ -16,6 +16,7 @@ import GrainIcon from '@mui/icons-material/Grain'
 import LoginIcon from '@mui/icons-material/Login'
 import {usePolkadot} from '@/hooks/usePolkadot'
 import {deepOrange} from '@mui/material/colors'
+import {getSignInMessageWithAddress} from '@/utils/signature'
 
 export default function () {
   const {
@@ -40,7 +41,7 @@ export default function () {
       hideSigninError()
       if (hasAccount) {
         if (selectedAccount) {
-          const message = `Sign-in request for address ${selectedAccount.address}.`
+          const message = getSignInMessageWithAddress(selectedAccount.address)
           const signature = await getSignature(message)
           if (signature) {
             setLoading(true)

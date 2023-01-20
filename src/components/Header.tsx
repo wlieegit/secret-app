@@ -21,6 +21,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 import SwitchAccountIcon from '@mui/icons-material/SwitchAccount'
 import {usePolkadot} from '@/hooks/usePolkadot'
 import type {InjectedAccountWithMeta} from '@polkadot/extension-inject/types'
+import {getSignInMessageWithAddress} from '@/utils/signature'
 
 type Props = {
   address: string
@@ -57,7 +58,7 @@ export default function ({address, onSignout}: Props) {
   async function handleSwitch(account: InjectedAccountWithMeta) {
     hideSigninError()
     hideAccountPicker()
-    const message = `Sign-in request for address ${account.address}.`
+    const message = getSignInMessageWithAddress(account.address)
     const signature = await getSignature(message, account)
     if (signature) {
       setLoading(true)

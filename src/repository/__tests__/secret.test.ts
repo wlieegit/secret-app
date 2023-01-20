@@ -1,4 +1,4 @@
-import {client} from '@/utils/dynamodb'
+import {dynamodbDocument} from '@/utils/dynamodb'
 import {getRandomSecret, TableName} from '@/repository/secret'
 
 describe('secret repository', () => {
@@ -13,14 +13,18 @@ describe('secret repository', () => {
         putRequests.push({PutRequest: {Item: {id, secret}}})
         deleteRequests.push({DeleteRequest: {Key: {id}}})
       }
-      await client.batchWrite({RequestItems: {[TableName]: putRequests}})
+      await dynamodbDocument.batchWrite({
+        RequestItems: {[TableName]: putRequests},
+      })
 
       for (let i = 0; i < 100; i++) {
         const secret = await getRandomSecret()
         expect(secrets.includes(secret)).toBeTruthy()
       }
 
-      await client.batchWrite({RequestItems: {[TableName]: deleteRequests}})
+      await dynamodbDocument.batchWrite({
+        RequestItems: {[TableName]: deleteRequests},
+      })
     })
 
     it('should return null when there has no data in db', async () => {

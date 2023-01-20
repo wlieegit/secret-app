@@ -5,6 +5,8 @@ import {
   web3Enable,
   web3FromSource,
 } from '@polkadot/extension-dapp'
+import {defaultTestAddress} from '../../../test/signature-test-util'
+import {getSignInMessageWithAddress} from '@/utils/signature'
 
 jest.mock('@polkadot/extension-dapp', () => ({
   ...jest.requireActual('@polkadot/extension-dapp'),
@@ -19,7 +21,7 @@ const web3FromSourceMock = jest.mocked(web3FromSource)
 
 describe('usePolkadot - Web3IsInjected', () => {
   const account = {
-    address: '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo',
+    address: defaultTestAddress,
     meta: {source: 'polkadot'},
   }
 
@@ -78,7 +80,7 @@ describe('usePolkadot - Web3IsInjected', () => {
     const {result, waitForNextUpdate} = renderHook(() => usePolkadot(true))
     await waitForNextUpdate()
     const signature = await result.current.getSignature(
-      'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.',
+      getSignInMessageWithAddress(defaultTestAddress),
       account,
     )
 
@@ -102,7 +104,7 @@ describe('usePolkadot - Web3IsInjected', () => {
 
     await act(async () => {
       await result.current.getSignature(
-        'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.',
+        getSignInMessageWithAddress(defaultTestAddress),
         account,
       )
     })
@@ -130,7 +132,7 @@ describe('usePolkadot - Web3IsInjected', () => {
     let signature: any
     await act(async () => {
       signature = await result.current.getSignature(
-        'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.',
+        getSignInMessageWithAddress(defaultTestAddress),
       )
     })
 

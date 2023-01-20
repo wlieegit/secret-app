@@ -4,6 +4,7 @@ import {
   isValidSignature,
   isValidMessage,
 } from '@/utils/polkadot'
+import {getDefaultSignatureInfos} from '../../../../../test/signature-test-util'
 
 jest.mock('@/utils/polkadot')
 const isValidAddressMock = jest.mocked(isValidAddress)
@@ -12,11 +13,7 @@ const isValidMessageMock = jest.mocked(isValidMessage)
 
 describe('authorize', () => {
   describe('polkadotAuthorize', () => {
-    const message =
-      'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.'
-    const signature =
-      '0xfc03197bd2110f613677913e3d52afbc1ecda9099109f01300a97acde7122d305d87d115cf173632319c6666d829a4585a45462cb3d2df5513f7d5a68c9f1785'
-    const address = '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo'
+    const {signature, message, address} = getDefaultSignatureInfos()
 
     beforeEach(() => {
       jest.resetAllMocks()

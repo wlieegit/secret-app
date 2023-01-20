@@ -7,6 +7,8 @@ import {
   web3FromSource,
 } from '@polkadot/extension-dapp'
 import {signIn} from 'next-auth/react'
+import {defaultTestAddress} from '../../../test/signature-test-util'
+import {getSignInMessageWithAddress} from '@/utils/signature'
 
 jest.mock('@polkadot/extension-dapp', () => ({
   isWeb3Injected: true,
@@ -26,7 +28,7 @@ const signInMock = jest.mocked(signIn)
 
 describe('<Connect /> - Web3IsInjected', () => {
   const account = {
-    address: '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo',
+    address: defaultTestAddress,
     meta: {source: 'polkadot'},
   }
 
@@ -77,9 +79,8 @@ describe('<Connect /> - Web3IsInjected', () => {
 
     expect(signInMock).toBeCalledTimes(1)
     expect(signInMock).toBeCalledWith('polkadot', {
-      address: '14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo',
-      message:
-        'Sign-in request for address 14GgSVJ1unwjVw4CuMGXYz4P4yT1HzVqEDEiExhiCS84EGQo.',
+      address: defaultTestAddress,
+      message: getSignInMessageWithAddress(defaultTestAddress),
       redirect: false,
       signature: 'test signature',
     })

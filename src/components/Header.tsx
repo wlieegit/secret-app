@@ -75,7 +75,7 @@ export default function Header({
         })
         if (resp.ok) {
           setSelectedAccount(account)
-          afterSwitchAccount(account)
+          afterSwitchAccount()
         } else {
           throw new Error(resp.error)
         }

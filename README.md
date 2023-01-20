@@ -43,8 +43,6 @@ To start a local server:
 
 ### Use local dynamodb
 
-Add `DYNAMODB_ENDPOINT=http://localhost:8000` to file `.env.local` at project root.
-
 Run `yarn start:db:local` and then Run `yarn dev`.
 
 ### troubleshooting
@@ -61,12 +59,6 @@ Run `yarn start:db:local` and then Run `yarn dev`.
 
 1. Initialize dynamodb
    - create environment file `cp .env.template .env.devops`, and set env variable value
-   
-      ```bash
-      S_AWS_ACCESS_KEY=
-      S_AWS_SECRET_KEY=
-      S_AWS_REGION=
-      ```
    - run `yarn init:db`
 
 2. go to [vercel](https://vercel.com/dashboard) to create a new project

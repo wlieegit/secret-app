@@ -79,7 +79,7 @@ describe('secret api test', () => {
     expect(responseSecrets.size).toBeGreaterThan(2)
 
     for (const initData of initDatas) {
-      await client.delete({
+      await dynamodbDocument.delete({
         TableName,
         Key: {id: initData.id},
       })

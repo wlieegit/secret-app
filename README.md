@@ -2,7 +2,7 @@
 
 This is web app providing random presaved secret for users who have signed in using their polkdot wallet.
 It securely sign in user by asking wallet message sign requests and the signed message gets verified before a client session can be given to the browser.
-It supports wallet switch, which will automatically
+It supports both in-wallet and cross-wallet account switch, which will automatically override the previous account session when the switched account sign in successfully
 
 ## Feature list
 
@@ -21,10 +21,12 @@ It supports wallet switch, which will automatically
 
 ## Development
 
+Need nvm, node, yarn and docker (for local dynamodb)
+
 Install `yarn` globally
 
 ```bash
-nvm install 18
+nvm use
 npm i -g yarn
 ```
 

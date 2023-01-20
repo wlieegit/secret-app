@@ -15,7 +15,6 @@ export default createJestConfig({
   coverageDirectory: 'coverage',
   setupFiles: ['<rootDir>/test/setup-tests.ts'],
   testEnvironment: 'node',
-  preset: '@shelf/jest-dynamodb',
   moduleNameMapper,
   testMatch: [
     '**/__tests__/**/*.test.[jt]s?(x)',

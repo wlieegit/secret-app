@@ -8,12 +8,13 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write --ignore-path .gitignore .",
-    "test": "jest --runInBand",
-    "pretest": "yarn start:db:local",
+    "test": "yarn init:test:db & jest --runInBand --detectOpenHandles --forceExit",
+    "pretest": "yarn start:db:local --force-recreate",
     "posttest": "yarn stop:db:local",
     "start:db:local": "docker-compose up -d",
     "stop:db:local": "docker-compose down -v",
-    "init:db": "node ./scripts/init_db.js"
+    "init:db": "node ./scripts/init_db.js",
+    "init:test:db": "node ./scripts/init_test_db.js"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.245.0",
@@ -43,7 +44,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
-    "@shelf/jest-dynamodb": "^3.3.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/react-hooks": "^8.0.1",

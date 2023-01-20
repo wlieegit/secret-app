@@ -13,8 +13,9 @@
     "posttest": "yarn stop:db:local",
     "start:db:local": "docker-compose up -d",
     "stop:db:local": "docker-compose down -v",
-    "init:db": "node ./scripts/init_db.js",
-    "init:test:db": "node ./scripts/init_test_db.js"
+    "init:local:db": "node ./scripts/init_db.js local",
+    "init:test:db": "node ./scripts/init_db.js test",
+    "init:prod:db": "node ./scripts/init_db.js prod"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.245.0",

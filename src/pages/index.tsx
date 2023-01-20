@@ -32,7 +32,7 @@ function SecretPage() {
       }
       setLoading(false)
     }
-  }, [])
+  }, [isAuthenticated])
 
   useEffect(() => {
     fetchSecret()

@@ -45,7 +45,13 @@ To start a local server:
 
 ### Use local dynamodb
 
-Run `yarn start:db:local` and then Run `yarn dev`.
+Run script below.
+
+```bash
+yarn start:db:local
+yarn init:local:db
+yarn dev
+```
 
 ### troubleshooting
 
@@ -61,8 +67,8 @@ Run `yarn start:db:local` and then Run `yarn dev`.
 
 1. Initialize dynamodb
 
-   - create environment file `cp .env.template .env.devops`, and set env variable value
-   - run `yarn init:db`
+   - create environment file `cp .env.template .env.prod`, and set env variable value
+   - run `yarn init:prod:db`
 
 2. go to [vercel](https://vercel.com/dashboard) to create a new project
 3. connect and choose to import a git repository

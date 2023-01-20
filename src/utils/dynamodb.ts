@@ -1,11 +1,6 @@
 import {DynamoDBClient} from '@aws-sdk/client-dynamodb'
 import {DynamoDBDocument} from '@aws-sdk/lib-dynamodb'
 
-if (process.env.DYNAMODB_ENDPOINT && !process.env.AWS_REGION) {
-  //set a test region for dynamodb local
-  process.env.AWS_REGION = 'ap-southeast-2'
-}
-
 export const dynamodbDocument = DynamoDBDocument.from(
   new DynamoDBClient(
     process.env.JEST_WORKER_ID || process.env.DYNAMODB_ENDPOINT

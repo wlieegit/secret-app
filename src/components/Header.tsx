@@ -25,9 +25,14 @@ import {getSignInMessageWithAddress} from '@/utils/signature'
 type Props = {
   address: string
   onSignout: () => void
+  afterSwitchAccount: () => void
 }
 
-export default function Header({address, onSignout}: Props) {
+export default function Header({
+  address,
+  onSignout,
+  afterSwitchAccount,
+}: Props) {
   const {
     accounts,
     hasAccount,
@@ -70,6 +75,7 @@ export default function Header({address, onSignout}: Props) {
         })
         if (resp.ok) {
           setSelectedAccount(account)
+          afterSwitchAccount(account)
         } else {
           throw new Error(resp.error)
         }

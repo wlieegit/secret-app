@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import dynamic from 'next/dynamic'
 import {useSignout} from '@/hooks/useSignout'
 import Alert from '@mui/material/Alert'
@@ -20,17 +20,23 @@ function SecretPage() {
   const [error, setError] = useState<Error>()
   const [loading, setLoading] = useState<boolean>(false)
 
-  useEffect(() => {
+  const fetchSecret = useCallback(async function () {
     if (isAuthenticated) {
       setLoading(true)
-      fetch('/api/v1/secret').then(async (res) => {
+      try {
+        const res = await fetch('/api/v1/secret')
         const {secret} = await res.json()
         setSecret(secret)
-      }).catch(setError).finally(() => {
-        setLoading(false)
-      })
+      } catch (error: any) {
+        setError(error)
+      }
+      setLoading(false)
     }
-  }, [isAuthenticated])
+  }, [])
+
+  useEffect(() => {
+    fetchSecret()
+  }, [isAuthenticated, fetchSecret])
 
   if (!isAuthenticated) {
     return null
@@ -46,7 +52,11 @@ function SecretPage() {
       }}
     >
       <Card sx={{width: 650, minWidth: 650}}>
-        <Header address={session.user.address} onSignout={handleSignout} />
+        <Header
+          address={session.user.address}
+          afterSwitchAccount={fetchSecret}
+          onSignout={handleSignout}
+        />
         <CardContent>
           {secret && (
             <Typography

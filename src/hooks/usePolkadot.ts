@@ -33,23 +33,26 @@ export function usePolkadot(autoConnect: boolean = false): PolkadotData {
     }
   }, [selectedAccount])
 
-  const connect = useCallback(async function () {
-    try {
-      hideError()
-      const injectedExtensions = await web3Enable('secret-app')
-      if (injectedExtensions.length > 0) {
-        const accounts = await web3Accounts()
-        if (accounts.length === 0) {
-          throw new Error('NO_ACCOUNTS_CONNECTED')
+  const connect = useCallback(
+    async function () {
+      try {
+        hideError()
+        const injectedExtensions = await web3Enable('secret-app')
+        if (injectedExtensions.length > 0) {
+          const accounts = await web3Accounts()
+          if (accounts.length === 0) {
+            throw new Error('NO_ACCOUNTS_CONNECTED')
+          }
+          setAccounts(accounts)
+        } else {
+          throw new Error('NO_INJECTED_EXTENSIONS')
         }
-        setAccounts(accounts)
-      } else {
-        throw new Error('NO_INJECTED_EXTENSIONS')
+      } catch (error: any) {
+        setError(error)
       }
-    } catch (error: any) {
-      setError(error)
-    }
-  }, [setAccounts, setError])
+    },
+    [setAccounts, setError],
+  )
 
   useEffect(() => {
     if (isWeb3Injected) {

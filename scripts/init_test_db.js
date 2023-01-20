@@ -14,7 +14,7 @@ initTable()
 
 async function initTable() {
   const tableName = process.env.DYNAMODB_TABLE_NAME
-  
+
   try {
     const command = new CreateTableCommand({
       TableName: tableName,
@@ -38,7 +38,7 @@ async function initTable() {
     await client.send(command)
     console.log(`Table created: ${tableName}`)
   } catch (error) {
-    if (error.code = 'ECONNRESET') {
+    if ((error.code = 'ECONNRESET')) {
       // try again, until dyanmodb service up
       return initTable()
     }

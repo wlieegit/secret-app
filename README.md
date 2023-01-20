@@ -58,6 +58,7 @@ Run `yarn start:db:local` and then Run `yarn dev`.
 ## Deployment
 
 1. Initialize dynamodb
+
    - create environment file `cp .env.template .env.devops`, and set env variable value
    - run `yarn init:db`
 

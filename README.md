@@ -37,7 +37,7 @@ yarn install
 To start a local server:
 
 1. Create local environment `cp .env.template .env.local`
-2. Edit `.env.local`, set dynamodb env variable value.
+2. Edit `.env.local`, set env variable value.
 3. Run `yarn dev`.
 4. Goto http://localhost:3000
 
@@ -58,3 +58,21 @@ Run `yarn start:db:local` and then Run `yarn dev`.
    Note: If dynamodb-local is enabled through docker, it will also cause this problem, please modify our test port to avoid this problem
 
 ## Deployment
+
+1. Initialize dynamodb
+   - create environment file `cp .env.template .env.devops`, and set env variable value
+   
+      ```bash
+      S_AWS_ACCESS_KEY=
+      S_AWS_SECRET_KEY=
+      S_AWS_REGION=
+      ```
+   - run `yarn init:db`
+
+2. go to [vercel](https://vercel.com/dashboard) to create a new project
+3. connect and choose to import a git repository
+4. type a project name and choose `Next.js` as framework preset
+5. add environment variables
+   - S_AWS_ACCESS_KEY, S_AWS_SECRET_KEY, S_AWS_REGION, for dynamodb access
+   - JWT_SECRET, can be generate use the command: `node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"`
+6. click to deploy

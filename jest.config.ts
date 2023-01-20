@@ -17,4 +17,8 @@ export default createJestConfig({
   testEnvironment: 'node',
   preset: '@shelf/jest-dynamodb',
   moduleNameMapper,
+  testMatch: [
+    '**/__tests__/**/*.test.[jt]s?(x)',
+    '<rootDir>/test/**/*.test.[jt]s?(x)',
+  ],
 })

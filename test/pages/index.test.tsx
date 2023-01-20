@@ -1,4 +1,4 @@
-import SecretPage from '@/pages/index'
+import SecretPage from '@/pages'
 import '@testing-library/jest-dom'
 import {render, screen} from '@testing-library/react'
 import {useSignout} from '@/hooks/useSignout'

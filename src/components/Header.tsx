@@ -28,7 +28,7 @@ type Props = {
   onSignout: () => void
 }
 
-export default function ({address, onSignout}: Props) {
+export default function Header({address, onSignout}: Props) {
   const {
     accounts,
     hasAccount,
@@ -49,7 +49,7 @@ export default function ({address, onSignout}: Props) {
         }
       })
     }
-  }, [address, accounts])
+  }, [address, accounts, hasAccount, setSelectedAccount])
 
   useEffect(() => {
     setSigninError(error)

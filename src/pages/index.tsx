@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react'
 import dynamic from 'next/dynamic'
 import {useSignout} from '@/hooks/useSignout'
+import Alert from '@mui/material/Alert'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
 import Container from '@mui/material/CardContent'
 import LinearProgress from '@mui/material/LinearProgress'
 import Skeleton from '@mui/material/Skeleton'
@@ -17,12 +17,17 @@ const Header = dynamic(() => import('@/components/Header'), {
 function SecretPage() {
   const {handleSignout, session, isAuthenticated} = useSignout()
   const [secret, setSecret] = useState<string>()
+  const [error, setError] = useState<Error>()
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     if (isAuthenticated) {
+      setLoading(true)
       fetch('/api/v1/secret').then(async (res) => {
         const {secret} = await res.json()
         setSecret(secret)
+      }).catch(setError).finally(() => {
+        setLoading(false)
       })
     }
   }, [isAuthenticated])
@@ -33,6 +38,7 @@ function SecretPage() {
 
   return (
     <Container
+      data-testid="page-container"
       sx={{
         display: 'flex',
         justifyContent: 'center',
@@ -42,8 +48,9 @@ function SecretPage() {
       <Card sx={{width: 650, minWidth: 650}}>
         <Header address={session.user.address} onSignout={handleSignout} />
         <CardContent>
-          {secret ? (
+          {secret && (
             <Typography
+              data-testid="secret-text"
               variant="h5"
               component="div"
               color="text.primary"
@@ -52,7 +59,8 @@ function SecretPage() {
             >
               {secret}
             </Typography>
-          ) : (
+          )}
+          {loading && (
             <>
               <Skeleton />
               <Skeleton animation="wave" />
@@ -61,6 +69,11 @@ function SecretPage() {
           )}
         </CardContent>
       </Card>
+      {error && (
+        <Alert severity="error" sx={{width: '100%'}}>
+          Error retrieve secret: {error?.message}
+        </Alert>
+      )}
     </Container>
   )
 }

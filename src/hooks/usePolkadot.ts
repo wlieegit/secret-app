@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import {
   isWeb3Injected,
   web3Accounts,
@@ -28,20 +28,12 @@ export function usePolkadot(autoConnect: boolean = false): PolkadotData {
   const [error, setError] = useState<Error>()
 
   useEffect(() => {
-    if (isWeb3Injected) {
-      autoConnect && connect()
-    } else {
-      setError(new Error('NO_WEB3_INJECTED'))
-    }
-  }, [isWeb3Injected, autoConnect])
-
-  useEffect(() => {
     if (selectedAccount) {
       setSelectedAccount(selectedAccount)
     }
   }, [selectedAccount])
 
-  async function connect() {
+  const connect = useCallback(async function () {
     try {
       hideError()
       const injectedExtensions = await web3Enable('secret-app')
@@ -57,7 +49,15 @@ export function usePolkadot(autoConnect: boolean = false): PolkadotData {
     } catch (error: any) {
       setError(error)
     }
-  }
+  }, [setAccounts, setError])
+
+  useEffect(() => {
+    if (isWeb3Injected) {
+      autoConnect && connect()
+    } else {
+      setError(new Error('NO_WEB3_INJECTED'))
+    }
+  }, [autoConnect, connect])
 
   async function getSignature(
     message: string,

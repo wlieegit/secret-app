@@ -77,5 +77,12 @@ describe('secret api test', () => {
 
     //Get 100 times, we can think that at least 2 of the 10 data can be randomly selected
     expect(responseSecrets.size).toBeGreaterThan(2)
+
+    for (const initData of initDatas) {
+      await client.delete({
+        TableName,
+        Key: {id: initData.id},
+      })
+    }
   })
 })

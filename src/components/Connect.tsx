@@ -18,7 +18,7 @@ import {usePolkadot} from '@/hooks/usePolkadot'
 import {deepOrange} from '@mui/material/colors'
 import {getSignInMessageWithAddress} from '@/utils/signature'
 
-export default function () {
+export default function Connect() {
   const {
     accounts,
     hasAccount,
@@ -67,7 +67,7 @@ export default function () {
         await connect()
       }
     },
-    [accounts, selectedAccount],
+    [selectedAccount, connect, getSignature, hasAccount, router],
   )
 
   function hideSigninError() {

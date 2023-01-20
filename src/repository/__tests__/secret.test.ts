@@ -1,30 +1,30 @@
 import {dynamodbDocument} from '@/utils/dynamodb'
 import {getRandomSecret, TableName} from '@/repository/secret'
+import initDatas from '@/../scripts/init_data.json'
 
 describe('secret repository', () => {
   describe('getRandomSecret', () => {
     it('should return any number when there has data in db', async () => {
       const secrets = []
-      const putRequests = []
-      const deleteRequests = []
-      for (let id = 1; id <= 10; id++) {
-        const secret = `test data-${id}`
-        secrets.push(secret)
-        putRequests.push({PutRequest: {Item: {id, secret}}})
-        deleteRequests.push({DeleteRequest: {Key: {id}}})
+      for (const initData of initDatas) {
+        await dynamodbDocument.put({
+          TableName,
+          Item: {id: initData.id, secret: initData.secret},
+        })
+        secrets.push(initData.secret)
       }
-      await dynamodbDocument.batchWrite({
-        RequestItems: {[TableName]: putRequests},
-      })
 
       for (let i = 0; i < 100; i++) {
         const secret = await getRandomSecret()
         expect(secrets.includes(secret)).toBeTruthy()
       }
 
-      await dynamodbDocument.batchWrite({
-        RequestItems: {[TableName]: deleteRequests},
-      })
+      for (const initData of initDatas) {
+        await dynamodbDocument.delete({
+          TableName,
+          Key: {id: initData.id},
+        })
+      }
     })
 
     it('should return null when there has no data in db', async () => {

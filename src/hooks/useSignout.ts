@@ -9,6 +9,7 @@ type UseSignoutData = {
 }
 
 export function useSignout(): UseSignoutData {
+  //client side only
   const session = useSession()
   const handleSignout = useCallback(async () => {
     await signOut({callbackUrl: '/signin'})

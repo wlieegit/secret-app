@@ -46,11 +46,13 @@ export default function Connect() {
           if (signature) {
             setLoading(true)
             try {
-              const resp = await signIn('polkadot', {
+              const resp = await signIn('polkadot', { // will call async authorize({address, message, signature})
+                // 'polkadot' will map to the CredentialProvider's id
                 address: selectedAccount.address,
                 message,
                 signature,
-                redirect: false,
+                redirect: false, // true will execute server side redirect, when signIn error the error info will 
+                // pass as query params, false redirect will get error from response payload
               })
               if (resp.ok) {
                 await router.push('/')
@@ -67,7 +69,7 @@ export default function Connect() {
         await connect()
       }
     },
-    [selectedAccount, connect, getSignature, hasAccount, router],
+    [selectedAccount, connect, getSignature, hasAccount, router], //prevent big function recreate
   )
 
   function hideSigninError() {

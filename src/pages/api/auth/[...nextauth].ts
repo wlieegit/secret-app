@@ -8,7 +8,7 @@ const maxAge = 3600 // expires in 1 hour to be safe, as already have session ref
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      id: 'polkadot',
+      id: 'polkadot', //
       name: 'Polkadot',
       credentials: {
         address: {type: 'text'},
@@ -28,6 +28,7 @@ export default NextAuth({
     maxAge,
   },
   callbacks: {
+    // /session api
     async session({session, token}: {session: Session; token: JWT}) {
       return {...session, user: {address: token.sub}} as Session
     },

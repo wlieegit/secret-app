@@ -1,4 +1,5 @@
 import {useCallback, useEffect, useState} from 'react'
+// client side only
 import {
   isWeb3Injected,
   web3Accounts,

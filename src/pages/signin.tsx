@@ -37,7 +37,7 @@ function SigninPage() {
 export default SigninPage
 
 export async function getServerSideProps(context: NextPageContext) {
-  const session = await getSession(context)
+  const session = await getSession(context) // call the same logic behind /api/auth/session
   if (session) {
     return {
       redirect: {
@@ -47,6 +47,6 @@ export async function getServerSideProps(context: NextPageContext) {
     }
   }
   return {
-    props: {},
+    props: {}, // ssr props for SigninPage
   }
 }

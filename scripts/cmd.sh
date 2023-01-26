@@ -70,7 +70,7 @@ response:
 < HTTP/2 200 
 > Cookie: next-auth.csrf-token=67c7c52db3f0dfb03ae497483cc70ddfea425348d285d5cc0a974a4cded41a9c%7C613b5bc64343705cb6c4245d548409d03af193fdc97c75db8294f42321f13117; next-auth.callback-url=http%3A%2F%2Flocalhost%3A3000%2Fsignin
 
-# 2.3 hacker signin call, assumed hacker can get the post payload but not the signiature of the csrf-token (as it's in victum's cookie only), and replace the csrf-token with the next-auth.csrf-token got from hacker's browser assessing the target website /api/auth/csrf, and hacker can get a valid session cookie in the end
+# 2.3 hacker signin call, assumed hacker can get the post payload (i.e a signed msg, address, signature) but not the signiature of the csrf-token (as it's in victum's cookie only), and replace the csrf-token with the next-auth.csrf-token got from hacker's browser assessing the target website /api/auth/csrf, and hacker can get a valid session cookie in the end
 # meaning if hacker somehow get the payload of the victum's signin request, even without have the next-auth.csrf-token in victum's browser, attacked can get a new one
 # via /api/auth/csrf and use it in the tempered signin call (as cookie and the form csrfToken field)
 curl 'http://localhost:3000/api/auth/callback/polkadot?' \
@@ -95,4 +95,21 @@ response:
 < HTTP/1.1 200 OK
 < Set-Cookie: next-auth.session-token=eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..F-hW4cAjEdWIPyd1.5zwWKA4d-E9kJSnCevj89tf8UOv47t5TlYk9ZPEYdANMczerNBTp3eyQ92WxgthEh23Wl8huiVLnoJB6ZorfQmkNy__qc1GcpxvjEcCMQwyXnuMQ56XPgeV9zUSX3-2dfTsPLnlWnfobU8xUhgu7tZ7NFzF-TfBOfJ7V7Qu2cft_DAzMoNcjqLo.bil5tMIuOZH8ur0o-8kZtg; Path=/; Expires=Wed, 25 Jan 2023 23:14:25 GMT; HttpOnly; SameSite=Lax
 
-# I guess the only reason why Double Submit Cookie would work is that, in 2.3 if hacker can know POST signin payload, he can know the csrf-token cookie too.
+# this kind of vunability is essentially user's login secret is being given to hacker for whatever reason, and that login secret can be used multiple times, so hacker can reuse it.
+# Fix 1 would be add another layer of authentication, such as recapture, or multifactor
+# Fix 2 would be (1) frontend ask for server side random nounce which will be saved in server side, and this nounce has short expire time too and can only be used by once; (2) frontend login with adding the extra nounce into the signed msg, and then backend will check that nounce exists and not used before, if so only then grant session, can then delete the nounce (no use anymore)
+# for fix 2, even hacker has the login secret (which included the nouce and signature), it can't be replayed as server side state has ensured use only once. Hacker can ask for nounce but he can't sign the login with new nounce as he doens't have signning key.
+
+
+# 2.4 suppose hacker can make victum to click an email with below content, while the victum has open session with the app:
+```html
+<html>
+    <body>
+        <a href="https://secret-app-wpfi.vercel.app/api/v1/secret?csrfToken=">get a gift</a>
+    </body>
+</html>
+```
+# in our case it's a get call, there will be no state change triggered by this call but if it's other calls that does make change to user data, then hacker already made some benefit.
+# To prevent this, the backend can enforce the api parameter/header asking a csrfToken explicitly and validate it with the one from cookie, as that token can't match the one inside that victums' cookie, even hacker can get a new csrfToken, it won't match the one saved in victum's cookie,
+# thus this double cookie submit approach can mitigate such vunability, i.e. Cross Site Request Forgery
+

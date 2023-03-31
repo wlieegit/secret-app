@@ -4,6 +4,9 @@ This is web app providing random presaved secret for users who have signed in us
 It securely sign in user by asking wallet message sign requests and the signed message gets verified before a client session can be given to the browser.
 It supports both in-wallet and cross-wallet account switch, which will automatically override the previous account session when the switched account sign in successfully
 
+## Demo
+![Demo](demo/secret-app.gif)
+
 ## Feature list
 
 1. It's a production ready app based on nextjs ecosystem to drastically cutting off development effort
